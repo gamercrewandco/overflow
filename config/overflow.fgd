@@ -1,7 +1,7 @@
 // 
-// FloodEscape.Game : Sandbox.Game 
+// Overflow.FEGame : Sandbox.Game 
 // 
-@PointClass = flood_escape : ""
+@PointClass = overflow : ""
 [
 	targetname(target_source) : "Name" : : "The name that other entities refer to this entity by."
 	parentname(target_destination) [ group="Hierarchy" ] : "Parent" : : "The name of this entity's parent in the movement hierarchy. Entities with parents move with their parent."
@@ -9,7 +9,7 @@
 ]
 
 // 
-// FloodEscape.FEPlayer+Manager : Sandbox.Entity 
+// Overflow.FEPlayer+Manager : Sandbox.Entity 
 // 
 @PointClass = info_fe_manager : ""
 [

@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace FloodEscape
+namespace Overflow
 {
 	partial class FEPlayer : Player
 	{
@@ -61,6 +61,8 @@ namespace FloodEscape
 
 		public override void OnKilled()
 		{
+			FEGame.Current.numberOfPlayersLost++;
+
 			// stops this from being called more than once
 			if ( playerWonOrLost )
 				return;
@@ -69,7 +71,6 @@ namespace FloodEscape
 
 			Log.Info( GetClientOwner()?.Name + " has died to the flood!" );
 
-			Game.numberOfPlayersLost++;
 
 			playerWalking = false;
 			EnableDrawing = false;
@@ -101,6 +102,8 @@ namespace FloodEscape
 
 		public void OnWin()
 		{
+			FEGame.Current.numberOfPlayersWon++;
+
 			// stops this from being called more than once
 			if ( playerWonOrLost )
 				return;
@@ -112,7 +115,6 @@ namespace FloodEscape
 
 			Log.Info( GetClientOwner()?.Name + " escaped the flood!" );
 
-			Game.numberOfPlayersWon++;
 
 			playerWalking = false;
 			EnableDrawing = false;
