@@ -20,6 +20,7 @@ namespace overflow
 			if ( IsServer )
 			{
 				Log.Info( "My Gamemode Has Created Serverside!" );
+				new OverflowHUD();
 			}
 
 			if ( IsClient )
@@ -54,5 +55,7 @@ namespace overflow
 		{
 			OverflowPlayer.startWin = true;
 		}
+
+		
 	}
 }
