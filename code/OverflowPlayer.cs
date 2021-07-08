@@ -11,11 +11,11 @@ namespace overflow
 	partial class OverflowPlayer : Player
 	{
 		public bool playerFinished;
-		public static bool startWin;
 		public bool cameraToggle;
 
 		public PlayerSpectateCamera spectateCam;
 		public bool ignoreSpectate;
+
 		public Client currentSpectateClient;
 		public int selectedClientIndex;
 
@@ -40,12 +40,6 @@ namespace overflow
 		public override void Simulate( Client cl )
 		{
 			base.Simulate( cl );
-			
-			if ( startWin )
-			{
-				startWin = false;
-				OnWin();
-			}
 
 			if ( Input.Pressed( InputButton.View ) && IsServer)
 			{
@@ -62,10 +56,11 @@ namespace overflow
 			}
 
 			// spectator code (depends on if there is someone to specate)
-			if (playerFinished && Client.All.Count > 1 )
+			if ( playerFinished )
 			{
 				EnableAllCollisions = false;
 				EnableDrawing = false;
+				cameraToggle = false;
 
 				if ( Client.All.Count > 1 )
 					Spectate();
@@ -115,12 +110,16 @@ namespace overflow
 			Controller = null;
 			Camera = spectateCam;
 			Position = currentSpectateClient.Pawn.EyePos - new Vector3( 0, 0, 30 );
+
+			// debug information
+			//Log.Info(( currentSpectateClient.Name + " is client number " + selectedClientIndex) + " and is located at " + (currentSpectateClient.Pawn.EyePos - new Vector3( 0, 0, 30 )));
 		}
 
 		public override void OnKilled()
 		{
 			if ( playerFinished )
 				return;
+
 			playerFinished = true;
 
 			Velocity = Vector3.Zero;
@@ -136,7 +135,24 @@ namespace overflow
 				return;
 			playerFinished = true;
 
+
+			ignoreSpectate = true;
+
 			Log.Info( GetClientOwner()?.Name + " escaped the flood!" );
+		}
+	}
+
+	public class CurrentlySpectating : Panel
+	{
+		public Label text;
+
+		public CurrentlySpectating()
+		{
+			text = AddChild<Label>( "" );
+		}
+
+		public override void Tick()
+		{
 		}
 	}
 }

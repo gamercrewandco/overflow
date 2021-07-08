@@ -23,6 +23,7 @@ namespace overflow
 			{
 				Log.Info( "My Gamemode Has Created Serverside!" );
 				new OverflowHUD();
+				new OverflowHUDEntity();
 			}
 
 			if ( IsClient )
@@ -52,12 +53,6 @@ namespace overflow
 	[Library( "info_overflow_game_manager" )]
 	public partial class OverflowGameManager : Entity
 	{
-		[Input( Name = "PlayerWin" )]
-		public void PlayerWin()
-		{
-			OverflowPlayer.startWin = true;
-		}
-
 		
 	}
 }
