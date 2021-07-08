@@ -64,12 +64,16 @@ namespace overflow
 			// spectator code (depends on if there is someone to specate)
 			if (playerFinished && Client.All.Count > 1 )
 			{
-				Spectate();
-			}
-			else if ( playerFinished )
-			{
-				Controller = new NoclipController();
-				Camera = new FirstPersonCamera();
+				EnableAllCollisions = false;
+				EnableDrawing = false;
+
+				if ( Client.All.Count > 1 )
+					Spectate();
+				else
+				{
+					Controller = new NoclipController();
+					Camera = new FirstPersonCamera();
+				}
 			}
 		}
 
@@ -120,9 +124,6 @@ namespace overflow
 			playerFinished = true;
 
 			Velocity = Vector3.Zero;
-
-			EnableAllCollisions = false;
-			EnableDrawing = false;
 
 			ignoreSpectate = true;
 
