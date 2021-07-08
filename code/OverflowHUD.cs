@@ -26,8 +26,37 @@ namespace overflow
 				return;
 
 			RootPanel.StyleSheet.Load( "/overflowhud.scss" );
+
 			RootPanel.AddChild<ChatBox>();
-			RootPanel.AddChild<CurrentlySpectating>();
+			RootPanel.AddChild<NameTags>();
+			RootPanel.AddChild<VoiceList>();
+			RootPanel.AddChild<Scoreboard<ScoreboardEntry>>();
+			RootPanel.AddChild<PlayersRemaining>();
+		}
+	}
+
+	public class PlayersRemaining : Panel
+	{
+		public Label text;
+
+		public PlayersRemaining()
+		{
+			text = AddChild<Label>( "" );
+		}
+
+		public override void Tick()
+		{
+			text.Text = (Client.All.Count - (OverflowGame.Current.playersWon + OverflowGame.Current.playersLost)).ToString() + " players remaining";
+		}
+	}
+
+	public class WinnersScreen : Panel
+	{
+		public Label text;
+
+		public WinnersScreen()
+		{
+			text = AddChild<Label>( "" );
 		}
 	}
 }

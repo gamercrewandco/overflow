@@ -14,8 +14,8 @@ namespace overflow
 		// this is how we let every other class easily reference this one without static variables, neat!
 		public static new OverflowGame Current => Game.Current as OverflowGame;
 
-		public int playersWon;
-		public int playersLost;
+		[Net] public int playersWon { get; set; }
+		[Net] public int playersLost { get; set; }
 
 		public OverflowGame()
 		{

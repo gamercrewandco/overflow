@@ -87,9 +87,9 @@ namespace overflow
 			if ( playerFinished )
 				return;
 			playerFinished = true;
+			OverflowGame.Current.playersLost++;
 
 			Velocity = Vector3.Zero;
-
 			Log.Info( GetClientOwner()?.Name + " has died to the flood!" );
 		}
 
@@ -98,24 +98,10 @@ namespace overflow
 			if ( playerFinished )
 				return;
 			playerFinished = true;
+			OverflowGame.Current.playersWon++;
 
 			Velocity = Vector3.Zero;
-
 			Log.Info( GetClientOwner()?.Name + " escaped the flood!" );
-		}
-	}
-
-	public class CurrentlySpectating : Panel
-	{
-		public Label text;
-
-		public CurrentlySpectating()
-		{
-			text = AddChild<Label>( "" );
-		}
-
-		public override void Tick()
-		{
 		}
 	}
 }
