@@ -12,10 +12,7 @@ namespace overflow
 	{
 		public bool playerFinished;
 		public bool cameraToggle;
-
-		public PlayerSpectateCamera spectateCam;
 		public bool ignoreSpectate;
-
 		public Client currentSpectateClient;
 		public int selectedClientIndex;
 
@@ -27,7 +24,6 @@ namespace overflow
 			Controller = new WalkController();
 			Animator = new StandardPlayerAnimator();
 			Camera = new ThirdPersonCamera();
-			spectateCam = new PlayerSpectateCamera();
 
 			EnableAllCollisions = true;
 			EnableDrawing = true;
@@ -55,60 +51,31 @@ namespace overflow
 				}
 			}
 
-			// spectator code (depends on if there is someone to specate)
 			if ( playerFinished )
 			{
 				EnableAllCollisions = false;
 				EnableDrawing = false;
 				cameraToggle = false;
 
-				if ( Client.All.Count > 1 )
-					Spectate();
-				else
-				{
-					Controller = new NoclipController();
-					Camera = new FirstPersonCamera();
-				}
+				Controller = new NoclipController();
+				Camera = new FirstPersonCamera();
 			}
 		}
 
+		/// <summary>
+		/// don't use this, it doesn't work
+		/// </summary>
 		public void Spectate()
 		{
 			// handles changing the selected client's index
 			if ( Input.Pressed( InputButton.Use ) )
-				selectedClientIndex++;
+				//IncreaseIndex();
 			if ( Input.Pressed( InputButton.Menu ) )
-				selectedClientIndex--;
-
-			// handles overflow/underflow
-			if ( selectedClientIndex > Client.All.Count - 1 )
-				selectedClientIndex = 0;
-			if ( selectedClientIndex < 0 )
-				selectedClientIndex = Client.All.Count - 1;
+				//DecreaseIndex();
 
 			currentSpectateClient = Client.All[selectedClientIndex];
 
-			// handles not allowing to spectate non-spectatable players
-			if ((currentSpectateClient.Pawn as OverflowPlayer).ignoreSpectate )
-			{
-				if ( Input.Down( InputButton.Use ) )
-					selectedClientIndex++;
-				else if ( Input.Down( InputButton.Menu ) )
-					selectedClientIndex--;
-				else
-					selectedClientIndex++;
-
-				// handles overflow/underflow (again)
-				if ( selectedClientIndex > Client.All.Count - 1 )
-					selectedClientIndex = 0;
-				if ( selectedClientIndex < 0 )
-					selectedClientIndex = Client.All.Count - 1;
-
-				currentSpectateClient = Client.All[selectedClientIndex];
-			}
-
 			Controller = null;
-			Camera = spectateCam;
 			Position = currentSpectateClient.Pawn.EyePos - new Vector3( 0, 0, 30 );
 
 			// debug information
@@ -119,12 +86,9 @@ namespace overflow
 		{
 			if ( playerFinished )
 				return;
-
 			playerFinished = true;
 
 			Velocity = Vector3.Zero;
-
-			ignoreSpectate = true;
 
 			Log.Info( GetClientOwner()?.Name + " has died to the flood!" );
 		}
@@ -135,8 +99,7 @@ namespace overflow
 				return;
 			playerFinished = true;
 
-
-			ignoreSpectate = true;
+			Velocity = Vector3.Zero;
 
 			Log.Info( GetClientOwner()?.Name + " escaped the flood!" );
 		}
