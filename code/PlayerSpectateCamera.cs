@@ -8,11 +8,11 @@ using Sandbox;
 namespace overflow
 {
 	/// <summary>
-	/// Just a slightly altered SpectateRagdollCamera, suck it garru
+	/// Just a slightly altered SpectateRagdollCamera, suck it garry
 	/// </summary>
 	public class PlayerSpectateCamera : Camera
 	{
-		public Vector3 FocusPoint;
+		Vector3 FocusPoint;
 
 		public override void Activated()
 		{
@@ -28,11 +28,11 @@ namespace overflow
 			if ( player == null ) return;
 
 			// lerp the focus point
-			FocusPoint = Vector3.Lerp( FocusPoint, GetSpectatePoint(), Time.Delta * 5.0f );
+			FocusPoint = Vector3.Lerp( FocusPoint, GetSpectatePoint(), Time.Delta * 10.0f );
 
 			Pos = FocusPoint + GetViewOffset();
 			Rot = Input.Rotation;
-			FieldOfView = FieldOfView.LerpTo( 50, Time.Delta * 3.0f );
+			FieldOfView = FieldOfView.LerpTo( 80, Time.Delta * 3.0f );
 
 			Viewer = null;
 		}

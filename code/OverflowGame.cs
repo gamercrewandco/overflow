@@ -14,6 +14,8 @@ namespace overflow
 		// this is how we let every other class easily reference this one without static variables, neat!
 		public static new OverflowGame Current => Game.Current as OverflowGame;
 
+		public Client[] clientsInGame;
+
 		public OverflowGame()
 		{
 			// i feel incomplete without these log.info statements
