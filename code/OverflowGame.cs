@@ -35,6 +35,12 @@ namespace overflow
 		public override void Simulate( Client cl )
 		{
 			base.Simulate( cl );
+
+			if ( IsServer && playersWon + playersLost == Client.All.Count)
+			{
+				Log.Info( "All players have won!" );
+				//ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
+			}
 		}
 
 		// an epic gamer just joined the server, better give them an epic gamer pawn to play with
