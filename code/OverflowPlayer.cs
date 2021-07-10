@@ -13,8 +13,10 @@ namespace overflow
 		public bool playerFinished;
 		public bool cameraToggle;
 		public bool ignoreSpectate;
-		public Client currentSpectateClient;
 		public int selectedClientIndex;
+
+		public Color killedColor;
+		public Color escapedColor;
 
 		public override void Respawn()
 		{
@@ -29,6 +31,9 @@ namespace overflow
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
+
+			killedColor = Color.Red;
+			escapedColor = Color.Green;
 
 			base.Respawn();
 		}
@@ -62,26 +67,6 @@ namespace overflow
 			}
 		}
 
-		/// <summary>
-		/// don't use this, it doesn't work
-		/// </summary>
-		public void Spectate()
-		{
-			// handles changing the selected client's index
-			if ( Input.Pressed( InputButton.Use ) )
-				//IncreaseIndex();
-			if ( Input.Pressed( InputButton.Menu ) )
-				//DecreaseIndex();
-
-			currentSpectateClient = Client.All[selectedClientIndex];
-
-			Controller = null;
-			Position = currentSpectateClient.Pawn.EyePos - new Vector3( 0, 0, 30 );
-
-			// debug information
-			//Log.Info(( currentSpectateClient.Name + " is client number " + selectedClientIndex) + " and is located at " + (currentSpectateClient.Pawn.EyePos - new Vector3( 0, 0, 30 )));
-		}
-
 		public override void OnKilled()
 		{
 			if ( playerFinished )
@@ -90,7 +75,9 @@ namespace overflow
 			OverflowGame.Current.playersLost++;
 
 			Velocity = Vector3.Zero;
-			Log.Info( GetClientOwner()?.Name + " has died to the flood!" );
+			Client clientOwner = GetClientOwner();
+			Log.Info( clientOwner.Name + " has died to the flood!" );
+			OnKilledMessage( killedColor, $"{clientOwner.Name} has died to the flood!" );
 		}
 
 		public void OnWin()
@@ -101,7 +88,15 @@ namespace overflow
 			OverflowGame.Current.playersWon++;
 
 			Velocity = Vector3.Zero;
+			Client clientOwner = GetClientOwner();
 			Log.Info( GetClientOwner()?.Name + " escaped the flood!" );
+			OnKilledMessage( escapedColor, $"{clientOwner.Name} escaped the flood!" );
+		}
+
+		[ClientRpc]
+		public virtual void OnKilledMessage( Color color, string text )
+		{
+			WinLoseFeed.Current?.AddEntry( color, text );
 		}
 	}
 }

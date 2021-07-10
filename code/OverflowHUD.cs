@@ -31,7 +31,9 @@ namespace overflow
 			RootPanel.AddChild<NameTags>();
 			RootPanel.AddChild<VoiceList>();
 			RootPanel.AddChild<Scoreboard<ScoreboardEntry>>();
-			RootPanel.AddChild<PlayersRemaining>();
+			RootPanel.AddChild<Health>();
+			RootPanel.AddChild<WinLoseFeed>();
+			//RootPanel.AddChild<PlayersRemaining>();
 		}
 	}
 
@@ -57,6 +59,11 @@ namespace overflow
 		public WinnersScreen()
 		{
 			text = AddChild<Label>( "" );
+		}
+
+		public void Display()
+		{
+
 		}
 	}
 }

@@ -19,7 +19,6 @@ namespace overflow
 
 		public OverflowGame()
 		{
-			// i feel incomplete without these log.info statements
 			if ( IsServer )
 			{
 				Log.Info( "My Gamemode Has Created Serverside!" );
