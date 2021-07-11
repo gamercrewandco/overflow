@@ -57,7 +57,7 @@ namespace overflow
 				Controller = new WalkController();
 
 			// first/third person camera toggling
-			if ( Input.Pressed( InputButton.View ) && IsServer && !playerFinished && Controller == null)
+			if ( Input.Pressed( InputButton.View ) && IsServer && !playerFinished && Controller != null)
 			{
 				if ( cameraToggle == false )
 				{
