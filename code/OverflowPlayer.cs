@@ -31,7 +31,7 @@ namespace overflow
 			SetModel( "models/citizen/citizen.vmdl" );
 
 			// set controller, animator, and camera (pretty cool)
-			Controller = new WalkController();
+			Controller = null;
 			Animator = new StandardPlayerAnimator();
 			Camera = new ThirdPersonCamera();
 			
@@ -52,7 +52,12 @@ namespace overflow
 		{
 			base.Simulate( cl );
 
-			if ( Input.Pressed( InputButton.View ) && IsServer)
+			// disallow player movement until the game has started
+			if ( OverflowGame.Current.gameStarted && !playerFinished && Controller == null )
+				Controller = new WalkController();
+
+			// first/third person camera toggling
+			if ( Input.Pressed( InputButton.View ) && IsServer && !playerFinished )
 			{
 				if ( cameraToggle == false )
 				{
@@ -66,6 +71,7 @@ namespace overflow
 				}
 			}
 
+			// start spectating when the player wins/loses
 			if ( playerFinished )
 			{
 				EnableAllCollisions = false;
@@ -79,9 +85,9 @@ namespace overflow
 
 		public override void OnKilled()
 		{
-			if ( playerFinished )
-				return;
+			if ( playerFinished ) return;
 			playerFinished = true;
+
 			OverflowGame.Current.playersLost++;
 
 			Velocity = Vector3.Zero;
@@ -92,9 +98,9 @@ namespace overflow
 
 		public void OnWin()
 		{
-			if ( playerFinished )
-				return;
+			if ( playerFinished ) return;
 			playerFinished = true;
+
 			OverflowGame.Current.playersWon++;
 
 			Velocity = Vector3.Zero;
@@ -103,6 +109,11 @@ namespace overflow
 			OnKilledMessage( escapedColor, $"{clientOwner.Name} escaped the flood!" );
 		}
 
+		/// <summary>
+		/// Creates the UI message stating the player either escaped or died.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <param name="text"></param>
 		[ClientRpc]
 		public virtual void OnKilledMessage( Color color, string text )
 		{
@@ -110,15 +121,12 @@ namespace overflow
 		}
 		
 		public void Dress()
-		{
-			Log.Info("I am dressing up.");
-			
+		{		
 			if ( dressed ) return;
 			dressed = true;
 
 			if ( true )
 			{
-				Log.Info( "Trying to put on my pants." );
 				var model = Rand.FromArray( new[]
 				{
 				"models/citizen_clothes/trousers/trousers.jeans.vmdl",

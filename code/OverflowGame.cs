@@ -16,14 +16,20 @@ namespace overflow
 
 		[Net] public int playersWon { get; set; }
 		[Net] public int playersLost { get; set; }
+		[Net] public float startDelay { get; private set; }
+		[Net] public bool gameStarted { get; private set; }
 
 		public OverflowGame()
 		{
 			if ( IsServer )
 			{
 				Log.Info( "My Gamemode Has Created Serverside!" );
+
 				new OverflowHUD();
 				new OverflowHUDEntity();
+
+				startDelay = 15f;
+				StartGame();
 			}
 
 			if ( IsClient )
@@ -42,9 +48,22 @@ namespace overflow
 			}
 		}
 
+		/// <summary>
+		/// Counts down, then starts the game.
+		/// </summary>
+		public async void StartGame()
+		{
+			await Task.DelaySeconds( startDelay );
+			gameStarted = true;
+			Log.Info( "Game has started!" );
+		}
+
+		/// <summary>
+		/// Waits a few seconds, then loads the next level (for now).
+		/// </summary>
 		public async void Restart()
 		{
-			await Task.Delay( 10000 );
+			await Task.DelaySeconds( 10 );
 			ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
 		}
 
@@ -64,6 +83,8 @@ namespace overflow
 	[Library( "info_overflow_game_manager" )]
 	public partial class OverflowGameManager : Entity
 	{
+		public Output StartWaterRise;
+
 		
 	}
 }
