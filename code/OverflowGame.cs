@@ -36,11 +36,16 @@ namespace overflow
 		{
 			base.Simulate( cl );
 
-			if ( IsServer && playersWon + playersLost == Client.All.Count)
+			if ( IsServer && playersWon + playersLost == Client.All.Count )
 			{
-				Log.Info( "All players have won!" );
-				//ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
+				Restart();
 			}
+		}
+
+		public async void Restart()
+		{
+			await Task.Delay( 5000 );
+			ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
 		}
 
 		// an epic gamer just joined the server, better give them an epic gamer pawn to play with
