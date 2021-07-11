@@ -44,7 +44,7 @@ namespace overflow
 
 		public async void Restart()
 		{
-			await Task.Delay( 5000 );
+			await Task.Delay( 10000 );
 			ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
 		}
 
