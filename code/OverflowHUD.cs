@@ -33,7 +33,7 @@ namespace overflow
 			RootPanel.AddChild<Scoreboard<ScoreboardEntry>>();
 			RootPanel.AddChild<Health>();
 			RootPanel.AddChild<WinLoseFeed>();
-			//RootPanel.AddChild<PlayersRemaining>();
+			RootPanel.AddChild<PlayersRemaining>();
 		}
 	}
 
@@ -48,7 +48,7 @@ namespace overflow
 
 		public override void Tick()
 		{
-			text.Text = (Client.All.Count - (OverflowGame.Current.playersWon + OverflowGame.Current.playersLost)).ToString() + " players remaining";
+			text.Text = (Client.All.Count - (OverflowGame.Current.playersWon + OverflowGame.Current.playersLost)).ToString() + " player(s) remaining";
 		}
 	}
 

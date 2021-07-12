@@ -12,11 +12,9 @@ namespace overflow
 	{
 		public bool playerFinished;
 		public bool cameraToggle;
-		public bool ignoreSpectate;
-		public int selectedClientIndex;
 
-		public Color killedColor;
-		public Color escapedColor;
+		public Color killedColor = Color.Red;
+		public Color escapedColor = Color.Green;
 
 		ModelEntity pants;
 		ModelEntity jacket;
@@ -31,17 +29,19 @@ namespace overflow
 			SetModel( "models/citizen/citizen.vmdl" );
 
 			// set controller, animator, and camera (pretty cool)
-			Controller = null;
 			Animator = new StandardPlayerAnimator();
+			Controller = null;
 			Camera = new ThirdPersonCamera();
-			
+
+			playerFinished = false;
+
+			// keeps players that chose first person in first person
+			if (cameraToggle == true ) cameraToggle = false;
+
 			EnableAllCollisions = true;
 			EnableDrawing = true;
 			EnableHideInFirstPerson = true;
 			EnableShadowInFirstPerson = true;
-
-			killedColor = Color.Red;
-			escapedColor = Color.Green;
 
 			Dress();
 
@@ -52,12 +52,15 @@ namespace overflow
 		{
 			base.Simulate( cl );
 
+			if ( OverflowGame.Current.gameStarting == true )
+				Health = 100;
+
 			// disallow player movement until the game has started
 			if ( OverflowGame.Current.gameStarted && !playerFinished && Controller == null )
 				Controller = new WalkController();
 
 			// first/third person camera toggling
-			if ( Input.Pressed( InputButton.View ) && IsServer && !playerFinished )
+			if ( Input.Pressed( InputButton.View ) && IsServer && !playerFinished && OverflowGame.Current.gameStarted)
 			{
 				if ( cameraToggle == false )
 				{
@@ -76,7 +79,6 @@ namespace overflow
 			{
 				EnableAllCollisions = false;
 				EnableDrawing = false;
-				cameraToggle = false;
 
 				Controller = new NoclipController();
 				Camera = new FirstPersonCamera();

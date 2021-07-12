@@ -4,6 +4,7 @@ using Sandbox.UI;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 
 // make sure everything is in the same namespace, it's pretty important
 namespace overflow
@@ -18,6 +19,9 @@ namespace overflow
 		[Net] public int playersLost { get; set; }
 		[Net] public float startDelay { get; private set; }
 		[Net] public bool gameStarted { get; private set; }
+		[Net] public bool gameStarting { get; private set; }
+
+		public bool resetWater;
 
 		public OverflowGame()
 		{
@@ -28,7 +32,6 @@ namespace overflow
 				new OverflowHUD();
 				new OverflowHUDEntity();
 
-				startDelay = 15f;
 				StartGame();
 			}
 
@@ -42,7 +45,7 @@ namespace overflow
 		{
 			base.Simulate( cl );
 
-			if ( IsServer && playersWon + playersLost == Client.All.Count )
+			if ( IsServer && gameStarted && playersWon + playersLost == Client.All.Count )
 			{
 				Restart();
 			}
@@ -53,18 +56,31 @@ namespace overflow
 		/// </summary>
 		public async void StartGame()
 		{
+			startDelay = 10f;
 			await Task.DelaySeconds( startDelay );
 			gameStarted = true;
-			Log.Info( "Game has started!" );
+			gameStarting = false;
 		}
 
 		/// <summary>
-		/// Waits a few seconds, then loads the next level (for now).
+		/// Waits a few seconds, then resets everything (for now).
 		/// </summary>
 		public async void Restart()
 		{
+			gameStarted = false;
+
 			await Task.DelaySeconds( 10 );
-			ConsoleSystem.Run( "changelevel", "gamercrew.overflow_woods" );
+
+			gameStarting = true;
+			playersLost = 0;
+			playersWon = 0;
+
+			resetWater = true;
+
+			// respawns all players
+			Client.All.ToList().ForEach( Client => (Client.Pawn as OverflowPlayer)?.Respawn() );
+
+			StartGame();
 		}
 
 		// an epic gamer just joined the server, better give them an epic gamer pawn to play with
@@ -79,12 +95,41 @@ namespace overflow
 		}
 	}
 
-
 	[Library( "info_overflow_game_manager" )]
 	public partial class OverflowGameManager : Entity
 	{
-		public Output StartWaterRise;
+		/// <summary>
+		/// Fires when the game starts.
+		/// </summary>
+		protected Output GameStarted { get; set; }
 
-		
+		[Event.Tick]
+		public void Tick()
+		{
+			if ( OverflowGame.Current.gameStarted )
+			{
+				GameStarted.Fire( new Entity() );
+			}
+		}
+	}
+
+	[Library("overflow_water_mover")]
+	public partial class OverflowWaterMover : Entity
+	{
+		[Event.Tick]
+		public void Tick()
+		{
+			if ( OverflowGame.Current.resetWater )
+			{
+				Position = Vector3.Zero;
+				OverflowGame.Current.resetWater = false;
+			}
+		}
+
+		[Input]
+		public void Move()
+		{
+			Position += new Vector3( 0f, 0f, .5f );
+		}
 	}
 }
